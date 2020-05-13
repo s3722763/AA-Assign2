@@ -53,6 +53,8 @@ public class KillerSudokuGrid extends SudokuGrid
             this.allowedValues[i] = Integer.parseInt(allowed[i]);
         }
 
+        int numberCages = reader.nextInt();
+
         while (reader.hasNextLine()) {
             int target = reader.nextInt();
             //Value input format below
@@ -61,8 +63,9 @@ public class KillerSudokuGrid extends SudokuGrid
             String[] lineParts = reader.nextLine().split(" ");
             Cage cage = new Cage(target);
 
-            for (String linePart : lineParts) {
-                //Column
+            //Start from 1 as 0 is the target for this cage
+            for (int i = 1; i < lineParts.length; i++) {
+                String linePart = lineParts[i];
                 String[] coords = linePart.split(",");
 
                 //Column

@@ -16,10 +16,8 @@ import java.util.List;
  */
 public class BackTrackingSolver extends StdSudokuSolver
 {
-    // TODO: Add attributes as needed.
-
     public BackTrackingSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of BackTrackingSolver()
 
 
