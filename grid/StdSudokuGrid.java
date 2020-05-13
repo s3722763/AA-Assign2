@@ -151,17 +151,15 @@ public class StdSudokuGrid extends SudokuGrid
     }
 
     private boolean checkSquares() {
-        //TODO: implement for 4x4
         int size = (int)Math.sqrt(this.grid.length);
         int[] startingIndex = generateStartingIndexes(size);
-
         //int[] startingIndex = { 0, 3, 6 };
 
         for (int yStart : startingIndex) {
-            for (int y = yStart; y < (yStart + size); y++) {
+            for (int xStart : startingIndex) {
                 int[] values = new int[this.grid.length + 1];
 
-                for (int xStart : startingIndex) {
+                for (int y = yStart; y < (yStart + size); y++) {
                     for (int x = xStart; x < (xStart + size); x++) {
                         if (this.grid[y][x] != 0) {
                             if(values[this.grid[y][x]] != 0) {
