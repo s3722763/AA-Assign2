@@ -3,7 +3,12 @@
  */
 package grid;
 
+import util.GridIndex;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 
 /**
@@ -17,12 +22,11 @@ import java.io.*;
  */
 public class KillerSudokuGrid extends SudokuGrid
 {
-    // TODO: Add your own attributes
+    private List<Cage> listOfCages;
 
     public KillerSudokuGrid() {
         super();
-
-        // TODO: any necessary initialisation at the constructor
+        listOfCages = new ArrayList<Cage>();
     } // end of KillerSudokuGrid()
 
 
@@ -33,7 +37,46 @@ public class KillerSudokuGrid extends SudokuGrid
     public void initGrid(String filename)
         throws FileNotFoundException, IOException
     {
-        // TODO
+        File file = new File(filename);
+        Scanner reader = new Scanner(file);
+
+        //Create new grid
+        int size = reader.nextInt();
+        grid = new int[size][size];
+
+        reader.nextLine();
+        String allowedLine = reader.nextLine();
+        String[] allowed = allowedLine.split(" ");
+        this.allowedValues= new int[allowed.length];
+
+        for (int i = 0; i < allowed.length; i++){
+            this.allowedValues[i] = Integer.parseInt(allowed[i]);
+        }
+
+        while (reader.hasNextLine()) {
+            int target = reader.nextInt();
+            //Value input format below
+            //Column,Row Value
+
+            String[] lineParts = reader.nextLine().split(" ");
+            Cage cage = new Cage(target);
+
+            for (String linePart : lineParts) {
+                //Column
+                String[] coords = linePart.split(",");
+
+                //Column
+                int x = Integer.parseInt(coords[1]);
+                //Row
+                int y = Integer.parseInt(coords[0]);
+
+                cage.addPosition(x, y);
+            }
+
+            listOfCages.add(cage);
+        }
+
+        reader.close();
     } // end of initBoard()
 
 
@@ -41,40 +84,77 @@ public class KillerSudokuGrid extends SudokuGrid
     public void outputGrid(String filename)
         throws FileNotFoundException, IOException
     {
-        // TODO
+        this.writeFile(filename);
     } // end of outputBoard()
 
 
     @Override
     public String toString() {
-        // TODO
+        String s = new String();
 
-        // placeholder
-        return String.valueOf("");
+        for (int y = 0; y < this.grid.length; y++) {
+            for (int x = 0; x < this.grid[y].length; x++) {
+                if (x != 0) {
+                    s += (',');
+                }
+
+                s += (this.grid[y][x]);
+            }
+
+            s += '\n';
+        }
+        return s;
     } // end of toString()
 
 
     @Override
     public boolean validate() {
-        // TODO
+        boolean rowsValid = checkRows();
+        boolean columnsValid = checkColumns();
+        boolean squaresValid = checkSquares();
 
-        // placeholder
-        return false;
+        if (rowsValid && columnsValid && squaresValid) {
+            for (Cage cage : this.listOfCages) {
+                if (!cage.checkCage(this.grid)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     } // end of validate()
 
-    @Override
-    public void addNumber(int x, int y, int value) {
+    private class Cage {
+        private List<GridIndex> indexes;
+        private int target;
 
+        public Cage(int target) {
+            indexes = new ArrayList<GridIndex>();
+            this.target = target;
+        }
+
+        public void addPosition(int x, int y) {
+            GridIndex index = new GridIndex(x, y);
+            indexes.add(index);
+        }
+
+        public boolean checkCage(int[][] grid) {
+            int sum = 0;
+
+            for (GridIndex index : indexes) {
+                int value = grid[index.getY()][index.getX()];
+
+                //Need to have the grid full before can test the cages
+                if (value == 0) {
+                    return true;
+                }
+
+                sum += grid[index.getY()][index.getX()];
+            }
+
+            return sum == this.target;
+        }
     }
-
-    @Override
-    public int[][] getGrid() {
-        return new int[0][];
-    }
-
-    @Override
-    public int[] getAllowedValues() {
-        return new int[0];
-    }
-
 } // end of class KillerSudokuGrid

@@ -3,7 +3,12 @@
  */
 package grid;
 
+import util.GridIndex;
+
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -18,14 +23,8 @@ import java.util.Scanner;
  */
 public class StdSudokuGrid extends SudokuGrid
 {
-    // TODO: Add your own attributes
-    private int[][] grid;
-    private int[] allowedValues;
-
     public StdSudokuGrid() {
         super();
-
-        // TODO: any necessary initialisation at the constructor
     } // end of StdSudokuGrid()
 
 
@@ -73,14 +72,8 @@ public class StdSudokuGrid extends SudokuGrid
 
 
     @Override
-    public void outputGrid(String filename)
-        throws FileNotFoundException, IOException
-    {
-        File file = new File(filename);
-        PrintWriter writer = new PrintWriter(file);
-        String toWrite = this.toString();
-        writer.write(toWrite);
-        writer.close();
+    public void outputGrid(String filename) throws FileNotFoundException, IOException {
+        this.writeFile(filename);
     } // end of outputBoard()
 
     @Override
@@ -101,81 +94,6 @@ public class StdSudokuGrid extends SudokuGrid
         return s;
     } // end of toString()
 
-    private boolean checkRows() {
-        for (int y = 0; y < this.grid.length; y++) {
-            int[] values = new int[this.grid.length + 1];
-
-            for (int x = 0; x < this.grid[y].length; x++) {
-                //TODO: Check if right to not include this
-                /*if (this.grid[y][x] == 0) {
-                    return false;
-                } else */
-                if (this.grid[y][x] != 0) {
-                    if (values[this.grid[y][x]] != 0) {
-                        return false;
-                    } else {
-                        values[this.grid[y][x]] = 1;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean checkColumns() {
-        for (int x = 0; x < this.grid.length; x++) {
-            int[] values = new int[this.grid.length + 1];
-
-            for (int y = 0; y < this.grid.length; y++) {
-                if (this.grid[y][x] != 0) {
-                    if (values[this.grid[y][x]] != 0) {
-                        return false;
-                    } else {
-                        values[this.grid[y][x]] = 1;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    private int[] generateStartingIndexes(int size) {
-        int[] startIndexes = new int[size];
-
-        for (int i = 0; i < size; i++) {
-            startIndexes[i] = size * i;
-        }
-
-        return startIndexes;
-    }
-
-    private boolean checkSquares() {
-        int size = (int)Math.sqrt(this.grid.length);
-        int[] startingIndex = generateStartingIndexes(size);
-        //int[] startingIndex = { 0, 3, 6 };
-
-        for (int yStart : startingIndex) {
-            for (int xStart : startingIndex) {
-                int[] values = new int[this.grid.length + 1];
-
-                for (int y = yStart; y < (yStart + size); y++) {
-                    for (int x = xStart; x < (xStart + size); x++) {
-                        if (this.grid[y][x] != 0) {
-                            if(values[this.grid[y][x]] != 0) {
-                                return false;
-                            } else {
-                                values[this.grid[y][x]] = 1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public boolean validate() {
         //TODO: Combine check rows and check columns if have time
@@ -186,19 +104,5 @@ public class StdSudokuGrid extends SudokuGrid
 
         return columnsValid && rowsValid && squaresValid;
     } // end of validate()
-
-    @Override
-    public void addNumber(int x, int y, int value) {
-        this.grid[y][x] = value;
-    }
-
-    @Override
-    public int[][] getGrid() {
-        return this.grid;
-    }
-
-    @Override
-    public int[] getAllowedValues() {
-        return this.allowedValues;
-    }
 } // end of class StdSudokuGrid
+
