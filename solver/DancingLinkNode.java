@@ -8,17 +8,13 @@ public class DancingLinkNode {
     private DancingLinkNode column;
     private int value;
 
-    public DancingLinkNode(int value) {
+    public DancingLinkNode(/*int value*/) {
         this.up = null;
         this.down = null;
         this.left = null;
         this.right = null;
         this.column = null;
-        this.value = value;
-    }
-
-    public DancingLinkNode() {
-        this(-1);
+        //this.value = value;
     }
 
     public int getValue() {
@@ -26,6 +22,7 @@ public class DancingLinkNode {
     }
 
     public void setValue(int value) {
+        //System.out.println(value);
         this.value = value;
     }
 
@@ -66,25 +63,10 @@ public class DancingLinkNode {
     }
 
     public void setColumn(DancingLinkNode columnNode) {
-        //System.out.print(columnNode);
-
-        System.out.println("Changing column");
         this.column = columnNode;
     }
 
-    public boolean isColumnNode() {
+  /*  public boolean isColumnNode() {
         return value >= 0;
-    }
-
-    public int getDistanceFromRoot() {
-        DancingLinkNode col = this.column;
-        int hops = 0;
-
-        while (col.down != null) {
-            col = col.left;
-            hops += 1;
-        }
-
-        return hops;
-    }
+    }*/
 }

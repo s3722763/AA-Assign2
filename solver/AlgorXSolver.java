@@ -5,7 +5,6 @@ package solver;
 
 import grid.StdSudokuGrid;
 import grid.SudokuGrid;
-import javafx.scene.transform.MatrixType;
 import util.GridIndexValue;
 import util.Tuple2;
 
@@ -342,7 +341,7 @@ public class AlgorXSolver extends StdSudokuSolver
                     if (comparisonRow.get(i) == Boolean.TRUE && rows.get(i) == Boolean.TRUE) {
                         if (!comparisonRow.equals(rows)) {
                             //TODO: Track what is being removed and see if all the right ones are being removed
-                            //System.out.println("Removing: " + row_number);
+                            //System.out.print(i + ",");
                             toRemove.add(comparisonRow);
                             break;
                         }

@@ -34,29 +34,48 @@ public class DancingLinksSolver extends StdSudokuSolver
 
         //For testing
         //matrix.removeColumn(matrix.rootNode.right);
-        //generateMatrixConstraints(matrix, grid.getGrid().length, grid);
+
+        int number_constraints = generateMatrixConstraints(matrix, grid.getGrid().length, grid);
+        //matrix.printMatrix();
+        //System.out.println();
+
         List<DancingLinkNode> solution = new ArrayList<>();
-        matrix.process(solution, matrix.rootNode.getRight());
+        matrix.process(solution);
 
         solutionToGrid(solution, grid);
+        /*for (DancingLinkNode node = matrix.rootNode.getRight(); node != matrix.rootNode; node = node.getRight()) {
+            System.out.print(node.getDown().getValue() + ",");
+        }*/
 
+        //System.out.println();
         // placeholder
-        return false;
+        int solutionSize = (grid.getGrid().length * grid.getGrid().length) - number_constraints;
+
+        return solution.size() == solutionSize;
     } // end of solve()
 
     private void solutionToGrid(List<DancingLinkNode> solution, SudokuGrid grid) {
+        //System.out.println("Solution");
         for (DancingLinkNode node : solution) {
-            for (int i = 0; i < 4; i++) {
-                System.out.print(node.getDistanceFromRoot() + ",");
-            }
+            DancingLinkNode valueNode = node;
+            DancingLinkNode posNode = node.getRight();
 
-            System.out.println();
+            int size =  grid.getGrid().length;
+            int column_2_pos = posNode.getValue() - (size * size);
+
+            int y = column_2_pos  / size;
+            int x =  column_2_pos % size;
+            int value = (valueNode.getValue() % size) + 1;
+
+            grid.addNumber(x, y, value);
         }
-
     }
 
-    private void generateMatrixConstraints(DancingLinkMatrix matrix, int size, SudokuGrid grid) {
+    private int generateMatrixConstraints(DancingLinkMatrix matrix, int size, SudokuGrid grid) {
+        int number_constraints = 0;
         int box_width = (int)Math.sqrt(size);
+        //System.out.println("Remove Same");
+        List<DancingLinkNode> nodes = new ArrayList<>();
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
@@ -93,10 +112,14 @@ public class DancingLinksSolver extends StdSudokuSolver
                     temp += (3 * size * size);
                     toKeep.add(temp);
                     //System.out.println(printLine(toKeep, size));
-                    matrix.removeSame(toKeep);
+                    nodes.add(matrix.findSame(toKeep));
+                    number_constraints += 1;
                 }
             }
         }
+
+        matrix.removeSame(nodes);
+        return number_constraints;
     }
 
     //TODO: Column header nodes point to null in their up direction. Fix
@@ -106,11 +129,11 @@ public class DancingLinksSolver extends StdSudokuSolver
 
         public DancingLinkMatrix(int size) {
             this.size = size;
-            this.rootNode = new DancingLinkNode(0);
+            this.rootNode = new DancingLinkNode();
             DancingLinkNode currentNode = this.rootNode;
             //4 : number of constraints
             for (int i = 0; i < (size * size * 4); i++) {
-                DancingLinkNode tempNode = new DancingLinkNode(0);
+                DancingLinkNode tempNode = new DancingLinkNode();
 
                 currentNode.setRight(tempNode);
                 tempNode.setLeft(currentNode);
@@ -133,20 +156,53 @@ public class DancingLinksSolver extends StdSudokuSolver
             DancingLinkNode node = this.rootNode.getRight();
 
             while (node != this.rootNode) {
-                System.out.print(node.getValue() + ",");
+                System.out.print(node.getDown().getValue() + ",");
                 node = node.getRight();
             }
+
             System.out.println();
         }
 
-        private void removeSame(List<Integer> removalOffsets) {
-            //TODO: use remove column on each of the offsets
-            //The columns are gotten from this root node
-            for (Integer i : removalOffsets) {
-                DancingLinkNode node = getColumnNode(i);
+        private void removeSame(List<DancingLinkNode> nodes) {
+            for (DancingLinkNode node : nodes) {
+                DancingLinkNode rowNode = node;
 
-                removeColumn(node);
+                for (int i = 0; i < 4; i++) {
+                    cover(rowNode);
+                    //System.out.println("----------------");
+                    //printMatrix();
+                    rowNode = rowNode.getRight();
+                }
             }
+        }
+
+        private DancingLinkNode findSame(List<Integer> removalOffsets) {
+            //Get the first offset (this should be between 0 & 15 inclusive)
+            DancingLinkNode columnNodes = getColumnNode(removalOffsets.get(0));
+            DancingLinkNode row = null;
+
+            for (DancingLinkNode columnNode = columnNodes.getDown(); columnNode != columnNodes; columnNode = columnNode.getDown()) {
+                int index = 1;
+                boolean correct = true;
+
+                for (DancingLinkNode rowNode = columnNode.getRight(); rowNode != columnNode; rowNode = rowNode.getRight()) {
+                    if (!(rowNode.getValue() == removalOffsets.get(index))) {
+                        correct = false;
+                        break;
+                    }
+
+                    index += 1;
+                }
+
+                if (correct) {
+                    row = columnNode;
+                    break;
+                }
+            }
+
+            assert(row != null);
+
+            return row;
         }
 
         private DancingLinkNode getColumnNode(int offset) {
@@ -160,79 +216,71 @@ public class DancingLinksSolver extends StdSudokuSolver
             return node;
         }
 
-        public boolean process(List<DancingLinkNode> solution, DancingLinkNode columnNode) {
-            printMatrix();
+        public boolean process(List<DancingLinkNode> solution) {
+            //printMatrix();
             //Exit condition
-            if (solution.size() == (this.size * this.size)) {
-                return validate(solution);
+            if (this.rootNode.getRight() == this.rootNode) {
+                return true;
             }
 
             //Just remove nodes in the column
-            DancingLinkNode coveredColumn = columnNode;
-            List<DancingLinkNode> candidates = removeColumn(columnNode);
+            DancingLinkNode coveredColumn = rootNode.getRight();
+            List<DancingLinkNode> candidates = removeColumn(coveredColumn);
 
             for (DancingLinkNode node : candidates) {
                 //Add current row to solution
                 solution.add(node);
-                List<DancingLinkNode> removedNodes = new ArrayList<>();
 
-                //For each node in the row
-                List<DancingLinkNode> nodesToCoverFromColumn = getNodesInRow(node);
-
-                for (DancingLinkNode nodeToCover : nodesToCoverFromColumn) {
-                    List<DancingLinkNode> nodesInColumn = getNodesInColumn(nodeToCover);
-
-                    for (DancingLinkNode nodeInColumn : nodesInColumn) {
-                        if (!nodeInColumn.isColumnNode()) {
-                            List<DancingLinkNode> rowNodes = getNodesInRow(nodeInColumn);
-
-                            for (DancingLinkNode rowNode : rowNodes) {
-                                coverRow(rowNode);
-                                removedNodes.add(rowNode);
-                            }
-
-                            coverRow(nodeInColumn);
-                            removedNodes.add(nodeInColumn);
-                        }
-                    }
-
-                    coverRow(nodeToCover);
-                    removedNodes.add(nodeToCover);
+                for (DancingLinkNode rowNode = node.getRight(); rowNode != node; rowNode = rowNode.getRight()) {
+                    cover(rowNode);
                 }
 
-                if (process(solution, columnNode.getRight())) {
+                if (process(solution)) {
                     return true;
-                } else {
-                    solution.remove(node);
+                }
 
-                    for (DancingLinkNode nodeToUncover : removedNodes) {
-                        uncoverRow(nodeToUncover);
-                    }
+                solution.remove(node);
+
+                for (DancingLinkNode rowNode = node.getLeft(); rowNode != node; rowNode = rowNode.getLeft()) {
+                    uncover(rowNode);
                 }
             }
-            //uncoverColumn(coveredColumn);
+
+            uncover(coveredColumn);
             return false;
+        }
+
+        private void uncover(DancingLinkNode node) {
+            DancingLinkNode columnNode = node.getColumn();
+
+            for (DancingLinkNode nodeInColumn = columnNode.getUp(); nodeInColumn != columnNode; nodeInColumn = nodeInColumn.getUp()) {
+                for (DancingLinkNode nodeInRow = nodeInColumn.getLeft(); nodeInRow != nodeInColumn; nodeInRow = nodeInRow.getLeft()) {
+                    uncoverRow(nodeInRow);
+                }
+            }
+
+            uncoverColumn(columnNode);
+        }
+
+        private void cover(DancingLinkNode node) {
+            node = node.getColumn();
+            coverColumn(node);
+
+            for (DancingLinkNode columnNode = node.getDown(); columnNode != node; columnNode = columnNode.getDown()) {
+                for (DancingLinkNode rowNode = columnNode.getRight(); rowNode != columnNode; rowNode = rowNode.getRight()) {
+                    //assert(rowNode.isColumnNode());
+                    coverRow(rowNode);
+                    //System.out.println("Covering: " + rowNode.getValue());
+                }
+            }
         }
 
         //hides the column. Returns all of the nodes in the
         private List<DancingLinkNode> removeColumn(DancingLinkNode node) {
             //TODO: Remove comment
             //Error caused by coverColumn
-            //coverColumn(node);
+            cover(node);
             return getNodesInColumn(node);
-        }
-
-        //Gets all ndoes in row. DOES NOT INCLUDE NODE IN ARGUMENT
-        private List<DancingLinkNode> getNodesInRow(DancingLinkNode rowNode) {
-            List<DancingLinkNode> nodes = new ArrayList<>();
-            DancingLinkNode tempNodeRef = rowNode.getRight();
-
-            while (tempNodeRef != rowNode) {
-                nodes.add(tempNodeRef);
-                tempNodeRef = tempNodeRef.getRight();
-            }
-
-            return nodes;
         }
 
         //Returns nodes in cloumn. DOES NOT INCLUDE NODE SPECIFIED IN ARGUMENT
@@ -248,29 +296,6 @@ public class DancingLinksSolver extends StdSudokuSolver
             return nodes;
         }
 
-        private boolean validate(List<DancingLinkNode> solution) {
-            //TODO: Check if this works
-            List<DancingLinkNode> columnsInSolution = new ArrayList<>();
-
-            for (DancingLinkNode node : solution) {
-                System.out.println(node.getColumn().getValue());
-
-                DancingLinkNode tempNode = node;
-
-                do {
-                    if (columnsInSolution.contains(tempNode.getColumn())) {
-                        return false;
-                    } else {
-                        columnsInSolution.add(tempNode.getColumn());
-                    }
-
-                    tempNode = tempNode.getRight();
-                } while (tempNode != node);
-            }
-
-            return true;
-        }
-
         private void uncoverColumn(DancingLinkNode node) {
             //Cover column
             node.getLeft().setRight(node);
@@ -283,7 +308,7 @@ public class DancingLinksSolver extends StdSudokuSolver
             node.getUp().setDown(node);
             node.getDown().setUp(node);
 
-            node.getColumn().setValue(node.getColumn().getValue() + 1);
+            //node.getColumn().setValue(node.getColumn().getValue() + 1);
             //System.out.println("Uncover row");
         }
 
@@ -300,9 +325,9 @@ public class DancingLinksSolver extends StdSudokuSolver
             node.getUp().setDown(node.getDown());
             node.getDown().setUp(node.getUp());
             //System.out.println("Cover Row");
-            if (!node.isColumnNode()) {
+            /*if (!node.isColumnNode()) {
                 node.getColumn().setValue(node.getColumn().getValue() - 1);
-            }
+            }*/
 
             return true;
         }
@@ -315,7 +340,7 @@ public class DancingLinksSolver extends StdSudokuSolver
             int box_width = (int)Math.sqrt(size);
 
             for (int y = 0; y < size * size * size; y++) {
-                System.out.println(y);
+                //System.out.println(y);
 
                 if (y != 0) {
                     //Go the box ->
@@ -369,7 +394,7 @@ public class DancingLinksSolver extends StdSudokuSolver
                 this.add(box_val_x_pos, y, boxNode, BOXES_MATRIX_INDEX);
             }
 
-            printMatrix();
+            //printMatrix();
         }
 
 
@@ -377,7 +402,7 @@ public class DancingLinksSolver extends StdSudokuSolver
             int matrix_offset = matrix_id * (this.size * this.size);
             DancingLinkNode columnNode = getColumnNode(matrix_offset + x);
             node.setColumn(columnNode);
-            columnNode.setValue(columnNode.getValue() + 1);
+            node.setValue(matrix_offset + x);
 
             DancingLinkNode tempNode = columnNode;
 
@@ -390,7 +415,7 @@ public class DancingLinksSolver extends StdSudokuSolver
             node.setDown(columnNode);
             columnNode.setUp(node);
 
-            System.out.println("Adding to column: " + columnNode);
+            //System.out.println("Adding to column: " + columnNode);
         }
 
     }
