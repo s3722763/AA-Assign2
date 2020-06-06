@@ -65,7 +65,7 @@ public class DancingLinksSolver extends StdSudokuSolver
 
             int y = column_2_pos  / size;
             int x =  column_2_pos % size;
-            int value = (valueNode.getValue() % size) + 1;
+            int value = grid.getAllowedValues()[valueNode.getValue() % size];
 
             grid.addNumber(x, y, value);
         }

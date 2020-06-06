@@ -68,7 +68,7 @@ public class AlgorXSolver extends StdSudokuSolver
         for (int i = 0; i < binaryMatrix.binaryMatrix.size(); i++) {
             for (int j = (size * size); j < (2 * size * size); j++) {
                if (binaryMatrix.binaryMatrix.get(i).get(j) == Boolean.TRUE) {
-                    int number = (j % size) + 1;
+                    int number = grid.getAllowedValues()[j % size];
                     int row = i % size;
 
                     if ((i % size == 0) && i != 0) {
