@@ -35,14 +35,7 @@ public class AlgorXSolver extends StdSudokuSolver
         //Using cutback breaks it will find out problerm later
         cutbackMatrixConstraints(binaryMatrix, grid.getGrid().length, grid);
         //System.out.println();
-        //TODO: Make recursive loop. Each iteration of the method has a different constraints matrix
-        // The index of the array is stored in a list. The value at the index the same as the current recurion loop (loop 0 = index 0)
-        // is the current line which is being checked. The loop calling the method is responsible for creating a new constraints array.
-        // The new constraints matrix must be created not an old one. This is because if the old one is used past values will be lost.
-        // A successful find is when all 4 of the lists produced by the matrixes are all 1
 
-        //Algo: Chose first line. In this implementation chose first index (0) therefore R1C1#1. Remove this line
-        // For the row also remove any which have a one in the same position. The remove the column after that
         //binaryMatrix.printMatrix();
         //System.out.println("Starting algo");
         BinaryMatrix foundSolution = algorithmx(binaryMatrix, 0);
@@ -230,7 +223,7 @@ public class AlgorXSolver extends StdSudokuSolver
 
         public void add(int x, int y, boolean value, int matrix_id) {
             int matrix_offset = matrix_id * (this.size * this.size);
-            List row = binaryMatrix.get(y);
+            List<Boolean> row = binaryMatrix.get(y);
             row.set(x + matrix_offset, value ? Boolean.TRUE : Boolean.FALSE);
         }
 
