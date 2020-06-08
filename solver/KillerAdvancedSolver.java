@@ -19,10 +19,8 @@ import java.util.Map;
  */
 public class KillerAdvancedSolver extends KillerSudokuSolver
 {
-    // TODO: Add attributes as needed.
-
     public KillerAdvancedSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of KillerAdvancedSolver()
 
     @Override
@@ -134,7 +132,6 @@ public class KillerAdvancedSolver extends KillerSudokuSolver
         return amount;
     }
 
-    //TODO: Column header nodes point to null in their up direction. Fix
     private class DancingLinkMatrix {
         private int size;
         private DancingLinkNode rootNode;
@@ -154,7 +151,6 @@ public class KillerAdvancedSolver extends KillerSudokuSolver
                 tempNode.setColumn(tempNode);
 
                 currentNode = tempNode;
-                //TODO: What about setup?
                 //Have the column node link to itself
                 tempNode.setDown(tempNode);
             }
@@ -162,7 +158,6 @@ public class KillerAdvancedSolver extends KillerSudokuSolver
             //Set last node right to root node
             currentNode.setRight(this.rootNode);
             this.rootNode.setLeft(currentNode);
-            //TODO: Setup column nodes
         }
 
         public void printMatrix() {
@@ -179,7 +174,6 @@ public class KillerAdvancedSolver extends KillerSudokuSolver
         private DancingLinkNode getColumnNode(int offset) {
             DancingLinkNode node = this.rootNode.getRight();
 
-            //TODO: Check < OR <=
             for (int i = 0; i < offset; i++) {
                 node = node.getRight();
             }

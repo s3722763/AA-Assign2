@@ -96,8 +96,6 @@ public class StdSudokuGrid extends SudokuGrid
 
     @Override
     public boolean validate() {
-        //TODO: Combine check rows and check columns if have time
-        //TODO: if vlaue is zero then does woory about counting
         boolean columnsValid = checkColumns();
         boolean rowsValid = checkRows();
         boolean squaresValid = checkSquares();

@@ -69,10 +69,6 @@ public abstract class SudokuGrid
             int[] values = new int[this.grid.length + 1];
 
             for (int x = 0; x < this.grid[y].length; x++) {
-                //TODO: Check if right to not include this
-                /*if (this.grid[y][x] == 0) {
-                    return false;
-                } else */
                 if (this.grid[y][x] != 0) {
                     if (values[this.grid[y][x]] != 0) {
                         return false;

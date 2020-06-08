@@ -23,7 +23,7 @@ public class AlgorXSolver extends StdSudokuSolver
     final int BOXES_MATRIX_INDEX = 3;
 
     public AlgorXSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of AlgorXSolver()
 
 
@@ -234,7 +234,6 @@ public class AlgorXSolver extends StdSudokuSolver
             int box_pos = 0;
             int box_width = (int)Math.sqrt(size);
 
-            //TODO: Finish expanding this for all possible values
             for (int y = 0; y < size * size * size; y++) {
                 if (y != 0) {
                     //Go the box ->
@@ -331,7 +330,6 @@ public class AlgorXSolver extends StdSudokuSolver
                 for (int i = 0; i < comparisonRow.size(); i++) {
                     if (comparisonRow.get(i) == Boolean.TRUE && rows.get(i) == Boolean.TRUE) {
                         if (!comparisonRow.equals(rows)) {
-                            //TODO: Track what is being removed and see if all the right ones are being removed
                             //System.out.print(i + ",");
                             toRemove.add(comparisonRow);
                             break;

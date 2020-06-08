@@ -6,7 +6,6 @@ package solver;
 
 import grid.SudokuGrid;
 
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 public class DancingLinksSolver extends StdSudokuSolver
 {
     public DancingLinksSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of DancingLinksSolver()
 
 
@@ -117,7 +116,6 @@ public class DancingLinksSolver extends StdSudokuSolver
         return number_constraints;
     }
 
-    //TODO: Column header nodes point to null in their up direction. Fix
     private class DancingLinkMatrix {
         private int size;
         private DancingLinkNode rootNode;
@@ -137,14 +135,12 @@ public class DancingLinksSolver extends StdSudokuSolver
                 tempNode.setColumn(tempNode);
 
                 currentNode = tempNode;
-                //TODO: What about setup?
                 //Have the column node link to itself
                 tempNode.setDown(tempNode);
             }
 
             //Set last node right to root node
             currentNode.setRight(this.rootNode);
-            //TODO: Setup column nodes
         }
 
         public void printMatrix() {
@@ -203,7 +199,6 @@ public class DancingLinksSolver extends StdSudokuSolver
         private DancingLinkNode getColumnNode(int offset) {
             DancingLinkNode node = this.rootNode.getRight();
 
-            //TODO: Check < OR <=
             for (int i = 0; i < offset; i++) {
                 node = node.getRight();
             }
@@ -272,7 +267,6 @@ public class DancingLinksSolver extends StdSudokuSolver
 
         //hides the column. Returns all of the nodes in the
         private List<DancingLinkNode> removeColumn(DancingLinkNode node) {
-            //TODO: Remove comment
             //Error caused by coverColumn
             cover(node);
             return getNodesInColumn(node);

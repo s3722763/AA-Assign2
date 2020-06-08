@@ -16,8 +16,6 @@ import java.util.List;
  */
 public class KillerBackTrackingSolver extends KillerSudokuSolver
 {
-    // TODO: Add attributes as needed.
-
     public KillerBackTrackingSolver() {
 
     } // end of KillerBackTrackingSolver()
