@@ -5,10 +5,8 @@ package solver;
 
 import grid.StdSudokuGrid;
 import grid.SudokuGrid;
-import util.GridIndexValue;
 import util.Tuple2;
 
-import javax.naming.BinaryRefAddr;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

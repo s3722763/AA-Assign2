@@ -61,7 +61,7 @@ public class KillerSudokuGrid extends SudokuGrid
             //Column,Row Value
 
             String[] lineParts = reader.nextLine().split(" ");
-            Cage cage = new Cage(target);
+            Cage cage = new Cage(target, size);
 
             //Start from 1 as 0 is the target for this cage
             for (int i = 1; i < lineParts.length; i++) {
@@ -109,6 +109,16 @@ public class KillerSudokuGrid extends SudokuGrid
         return s;
     } // end of toString()
 
+    boolean checkCages() {
+        for (Cage cage : this.listOfCages) {
+            if (!cage.checkCage(this.grid)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     @Override
     public boolean validate() {
@@ -117,29 +127,41 @@ public class KillerSudokuGrid extends SudokuGrid
         boolean squaresValid = checkSquares();
 
         if (rowsValid && columnsValid && squaresValid) {
-            for (Cage cage : this.listOfCages) {
-                if (!cage.checkCage(this.grid)) {
-                    return false;
-                }
-            }
-
-            return true;
+            return checkCages();
         } else {
             return false;
         }
     } // end of validate()
 
-    private class Cage {
+    public boolean killerConstraintsValid() {
+        return checkCages();
+    }
+
+    public void reset() {
+        for (int y = 0; y < this.grid.length; y++) {
+            for (int x = 0; x < this.grid[y].length; x++) {
+                this.grid[y][x] = 0;
+            }
+        }
+    }
+
+    public List<Cage> getCages() {
+        return listOfCages;
+    }
+
+    public class Cage {
         private List<GridIndex> indexes;
         private int target;
+        private int size;
 
-        public Cage(int target) {
+        public Cage(int target, int size) {
             indexes = new ArrayList<GridIndex>();
             this.target = target;
+            this.size = size;
         }
 
         public void addPosition(int x, int y) {
-            GridIndex index = new GridIndex(x, y);
+            GridIndex index = new GridIndex(x, y, size);
             indexes.add(index);
         }
 
@@ -158,6 +180,18 @@ public class KillerSudokuGrid extends SudokuGrid
             }
 
             return sum == this.target;
+        }
+
+        public int getSize() {
+            return this.indexes.size();
+        }
+
+        public int getTarget() {
+            return this.target;
+        }
+
+        public List<GridIndex> getPositions() {
+            return this.indexes;
         }
     }
 } // end of class KillerSudokuGrid

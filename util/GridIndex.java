@@ -3,10 +3,12 @@ package util;
 public class GridIndex {
     private final int x;
     private final int y;
+    private final int size;
 
-    public GridIndex(int x, int y) {
+    public GridIndex(int x, int y, int size) {
         this.x = x;
         this.y = y;
+        this.size = size;
     }
 
     public int getX() {
@@ -33,6 +35,6 @@ public class GridIndex {
 
     @Override
     public int hashCode() {
-        return this.x + this.y;
+        return this.x + (this.y * size);
     }
 }

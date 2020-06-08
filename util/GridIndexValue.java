@@ -1,3 +1,4 @@
+/*
 package util;
 
 public class GridIndexValue extends GridIndex {
@@ -5,6 +6,11 @@ public class GridIndexValue extends GridIndex {
 
     public GridIndexValue(int x, int y, int value) {
         super(x, y);
+        this.value = value;
+    }
+
+    public GridIndexValue(GridIndex gridIndex, Integer value) {
+        super(gridIndex.getX(), gridIndex.getY());
         this.value = value;
     }
 
@@ -31,3 +37,4 @@ public class GridIndexValue extends GridIndex {
         return this.getX() + this.getY() + this.getValue();
     }
 }
+*/

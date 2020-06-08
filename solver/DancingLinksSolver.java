@@ -16,11 +16,6 @@ import java.util.List;
  */
 public class DancingLinksSolver extends StdSudokuSolver
 {
-    final int CELL_MATRIX_INDEX = 0;
-    final int ROWS_MATRIX_INDEX = 1;
-    final int COLUMNS_MATRIX_INDEX = 2;
-    final int BOXES_MATRIX_INDEX = 3;
-
     public DancingLinksSolver() {
         // TODO: any initialisation you want to implement.
     } // end of DancingLinksSolver()
@@ -224,10 +219,10 @@ public class DancingLinksSolver extends StdSudokuSolver
             }
 
             //Just remove nodes in the column
-            DancingLinkNode coveredColumn = rootNode.getRight();
-            List<DancingLinkNode> candidates = removeColumn(coveredColumn);
+            DancingLinkNode coveredColumn = this.rootNode.getRight();
+            cover(coveredColumn);
 
-            for (DancingLinkNode node : candidates) {
+            for (DancingLinkNode node = coveredColumn.getDown(); node != coveredColumn; node = node.getDown()) {
                 //Add current row to solution
                 solution.add(node);
 
@@ -414,7 +409,6 @@ public class DancingLinksSolver extends StdSudokuSolver
             node.setUp(tempNode);
             node.setDown(columnNode);
             columnNode.setUp(node);
-
             //System.out.println("Adding to column: " + columnNode);
         }
 

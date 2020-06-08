@@ -28,7 +28,7 @@ public class BackTrackingSolver extends StdSudokuSolver
         for (int y = 0; y < grid.getGrid().length; y++) {
             for (int x = 0; x < grid.getGrid()[y].length; x++) {
                 if (grid.getGrid()[y][x] == 0) {
-                    posToModify.add(new GridIndex(x, y));
+                    posToModify.add(new GridIndex(x, y, grid.getGrid().length));
                 }
             }
         }

@@ -12,6 +12,10 @@ import grid.SudokuGrid;
  */
 public abstract class SudokuSolver
 {
+    final int CELL_MATRIX_INDEX = 0;
+    final int ROWS_MATRIX_INDEX = 1;
+    final int COLUMNS_MATRIX_INDEX = 2;
+    final int BOXES_MATRIX_INDEX = 3;
 
     /**
      * Solves the input grid.  Different solvers should override this to implement
